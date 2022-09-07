@@ -1,8 +1,9 @@
-<?php 
+<?php
 
-class Model_ajax extends CI_Model {
+class Model_ajax extends CI_Model
+{
 
-	public function get_Datatables($datatables)
+    public function get_Datatables($datatables)
     {
         $columns = implode(', ', $datatables['col-display']) . ', ' . $datatables['id-table'];
 
@@ -17,16 +18,16 @@ class Model_ajax extends CI_Model {
         $search = $datatables['search']['value'];
 
         $where = '';
-        if ($search != '') {   
-            for ($i=0; $i < $count_c ; $i++) {
-                $where .= $columnd[$i] .' LIKE "%'. $search .'%"';
+        if ($search != '') {
+            for ($i = 0; $i < $count_c; $i++) {
+                $where .= $columnd[$i] . ' LIKE "%' . $search . '%"';
                 if ($i < $count_c - 1) {
                     $where .= ' OR ';
                 }
             }
         }
 
-        for ($i=0; $i < $count_c; $i++) { 
+        for ($i = 0; $i < $count_c; $i++) {
             $searchCol = $datatables['columns'][$i]['search']['value'];
             if ($searchCol != '') {
                 $where = $columnd[$i] . ' LIKE "%' . $searchCol . '%" ';
@@ -53,19 +54,18 @@ class Model_ajax extends CI_Model {
         $option['data']            = array();
         foreach ($list->result() as $row) {
             $option['data'][] = array(
-                                        $row->id_histori,
-                                        get_users($row->id_users),
-                                        $row->kegiatan,
-                                        $row->data,
-                                        $row->tgl,
-                                        $row->jam,
-                                        $row->browser,
-                                      );
+                $row->id_histori,
+                get_users($row->kode_user),
+                $row->kegiatan,
+                $row->data,
+                $row->tgl,
+                $row->jam,
+                $row->browser,
+            );
         }
         // eksekusi json
         echo json_encode($option);
     }
-
 }
 
 /* End of file Model_ajax.php */
