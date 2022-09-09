@@ -1,374 +1,380 @@
-<?php 
-    function cetak($str){
-        return strip_tags(htmlentities(str_replace(array(',','(',')'), array('&comma;','&lpar;','&rpar;'), $str), ENT_QUOTES, 'UTF-8'));
-    }
+<?php
+function cetak($str)
+{
+    return strip_tags(htmlentities(str_replace(array(',', '(', ')'), array('&comma;', '&lpar;', '&rpar;'), $str), ENT_QUOTES, 'UTF-8'));
+}
 
-    function cetak_meta($str,$mulai,$selesai){
-        return strip_tags(html_entity_decode(substr(str_replace('"','',$str),$mulai,$selesai), ENT_COMPAT, 'UTF-8'));
-    } 
+function cetak_meta($str, $mulai, $selesai)
+{
+    return strip_tags(html_entity_decode(substr(str_replace('"', '', $str), $mulai, $selesai), ENT_COMPAT, 'UTF-8'));
+}
 
-    function getSearchTermToBold($text, $words){
-        preg_match_all('~[A-Za-z0-9_äöüÄÖÜ]+~', $words, $m);
-        if (!$m)
-            return $text;
-        $re = '~(' . implode('|', $m[0]) . ')~i';
-        return preg_replace($re, '<b style="color:red">$0</b>', $text);
-    }
+function getSearchTermToBold($text, $words)
+{
+    preg_match_all('~[A-Za-z0-9_äöüÄÖÜ]+~', $words, $m);
+    if (!$m)
+        return $text;
+    $re = '~(' . implode('|', $m[0]) . ')~i';
+    return preg_replace($re, '<b style="color:red">$0</b>', $text);
+}
 
-    function tgl_indo($tgl){
-            $tanggal = substr($tgl,8,2);
-            $bulan = getBulan(substr($tgl,5,2));
-            $tahun = substr($tgl,0,4);
-            return $tanggal.' '.$bulan.' '.$tahun;       
-    } 
+function tgl_indo($tgl)
+{
+    $tanggal = substr($tgl, 8, 2);
+    $bulan = getBulan(substr($tgl, 5, 2));
+    $tahun = substr($tgl, 0, 4);
+    return $tanggal . ' ' . $bulan . ' ' . $tahun;
+}
 
-    
 
-    function menu_admin()
-    {
-        
-        $ci = & get_instance();
-        // $result = array();
-        $induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>0,'position'=>'Side','aktif'=>'Ya','level_akses'=>'admin'),'urutan','ASC');
-        $cek_menu = $induk->num_rows();
-        if ($cek_menu > 0) {
-            foreach ($induk->result() as $menu) {
-                $sub_induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>$menu->id_menu,'position'=>'Side','aktif'=>'Ya','level_akses'=>'admin'),'urutan','ASC');
-                $cek_submenu = $sub_induk->num_rows();
-                if ($cek_submenu > 0 ) {
-                    foreach ($sub_induk->result() as $submenu) {
-                        $results[$menu->nama_menu][] = array(
-                            'submenu'  => $submenu->nama_menu,
-                            'sublink'  => $submenu->link,
-                            'subicon'  => $submenu->icon       
-                        );
-                    }
-                }else{
-                    $results[$menu->nama_menu] = null;
+
+function menu_admin()
+{
+
+    $ci = &get_instance();
+    // $result = array();
+    $induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => 0, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => 'admin'), 'urutan', 'ASC');
+    $cek_menu = $induk->num_rows();
+    if ($cek_menu > 0) {
+        foreach ($induk->result() as $menu) {
+            $sub_induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => $menu->id_menu, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => 'admin'), 'urutan', 'ASC');
+            $cek_submenu = $sub_induk->num_rows();
+            if ($cek_submenu > 0) {
+                foreach ($sub_induk->result() as $submenu) {
+                    $results[$menu->nama_menu][] = array(
+                        'submenu'  => $submenu->nama_menu,
+                        'sublink'  => $submenu->link,
+                        'subicon'  => $submenu->icon
+                    );
                 }
-                
-                $result[] = array(
-                    'menu'  => $menu->nama_menu,
-                    'link'  => $menu->link,
-                    'icon'  => $menu->icon,
-                    'submenu' => $results[$menu->nama_menu]        
-                );
+            } else {
+                $results[$menu->nama_menu] = null;
             }
-        }else{
-           $result = null; 
-        }
-        $r = json_encode($result);
-        return $r;
-    }
 
-    function menu_user()
-    {
-        
-        $ci = & get_instance();
-        // $result = array();
-        $induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>0,'position'=>'Side','aktif'=>'Ya','level_akses'=>'user'),'urutan','ASC');
-        $cek_menu = $induk->num_rows();
-        if ($cek_menu > 0) {
-            foreach ($induk->result() as $menu) {
-                $sub_induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>$menu->id_menu,'position'=>'Side','aktif'=>'Ya','level_akses'=>'user'),'urutan','ASC');
-                $cek_submenu = $sub_induk->num_rows();
-                if ($cek_submenu > 0 ) {
-                    foreach ($sub_induk->result() as $submenu) {
-                        $results[$menu->nama_menu][] = array(
-                            'submenu'  => $submenu->nama_menu,
-                            'sublink'  => $submenu->link,
-                            'subicon'  => $submenu->icon       
-                        );
-                    }
-                }else{
-                    $results[$menu->nama_menu] = null;
+            $result[] = array(
+                'menu'  => $menu->nama_menu,
+                'link'  => $menu->link,
+                'icon'  => $menu->icon,
+                'submenu' => $results[$menu->nama_menu]
+            );
+        }
+    } else {
+        $result = null;
+    }
+    $r = json_encode($result);
+    return $r;
+}
+
+function menu_user()
+{
+
+    $ci = &get_instance();
+    // $result = array();
+    $induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => 0, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => 'user'), 'urutan', 'ASC');
+    $cek_menu = $induk->num_rows();
+    if ($cek_menu > 0) {
+        foreach ($induk->result() as $menu) {
+            $sub_induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => $menu->id_menu, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => 'user'), 'urutan', 'ASC');
+            $cek_submenu = $sub_induk->num_rows();
+            if ($cek_submenu > 0) {
+                foreach ($sub_induk->result() as $submenu) {
+                    $results[$menu->nama_menu][] = array(
+                        'submenu'  => $submenu->nama_menu,
+                        'sublink'  => $submenu->link,
+                        'subicon'  => $submenu->icon
+                    );
                 }
-                
-                $result[] = array(
-                    'menu'  => $menu->nama_menu,
-                    'link'  => $menu->link,
-                    'icon'  => $menu->icon,
-                    'submenu' => $results[$menu->nama_menu]        
-                );
+            } else {
+                $results[$menu->nama_menu] = null;
             }
-        }else{
-           $result = null; 
-        }
-        $r = json_encode($result);
-        return $r;
-    }
 
-    function menu_manager_frontend($level)
-    {
-        $ci = & get_instance();
-        $induk = $ci->model_app->view_where_order('t_front_menu',array('id_parent'=>0,'position'=>'Top','aktif'=>'Ya','level_akses'=>$level),'urutan','ASC');
-        $cek_menu = $induk->num_rows();
-        if ($cek_menu > 0) {
-            foreach ($induk->result() as $menu) {
-                $sub_induk = $ci->model_app->view_where_order('t_front_menu',array('id_parent'=>$menu->id_menu,'position'=>'Top','aktif'=>'Ya','level_akses'=>$level),'urutan','ASC');
-                $cek_submenu = $sub_induk->num_rows();
-                if ($cek_submenu > 0 ) {
-                    foreach ($sub_induk->result() as $submenu) {
-                        $results[$menu->nama_menu][] = array(
-                            'submenu'  => $submenu->nama_menu,
-                            'sublink'  => $submenu->link      
-                        );
-                    }
-                }else{
-                    $results[$menu->nama_menu] = null;
+            $result[] = array(
+                'menu'  => $menu->nama_menu,
+                'link'  => $menu->link,
+                'icon'  => $menu->icon,
+                'submenu' => $results[$menu->nama_menu]
+            );
+        }
+    } else {
+        $result = null;
+    }
+    $r = json_encode($result);
+    return $r;
+}
+
+function menu_manager_frontend($level)
+{
+    $ci = &get_instance();
+    $induk = $ci->model_app->view_where_order('t_front_menu', array('id_parent' => 0, 'position' => 'Top', 'aktif' => 'Ya', 'level_akses' => $level), 'urutan', 'ASC');
+    $cek_menu = $induk->num_rows();
+    if ($cek_menu > 0) {
+        foreach ($induk->result() as $menu) {
+            $sub_induk = $ci->model_app->view_where_order('t_front_menu', array('id_parent' => $menu->id_menu, 'position' => 'Top', 'aktif' => 'Ya', 'level_akses' => $level), 'urutan', 'ASC');
+            $cek_submenu = $sub_induk->num_rows();
+            if ($cek_submenu > 0) {
+                foreach ($sub_induk->result() as $submenu) {
+                    $results[$menu->nama_menu][] = array(
+                        'submenu'  => $submenu->nama_menu,
+                        'sublink'  => $submenu->link
+                    );
                 }
-                
-                $result[] = array(
-                    'menu'  => $menu->nama_menu,
-                    'link'  => $menu->link,
-                    'submenu' => $results[$menu->nama_menu]        
-                );
+            } else {
+                $results[$menu->nama_menu] = null;
             }
-        }else{
-           $result = null; 
+
+            $result[] = array(
+                'menu'  => $menu->nama_menu,
+                'link'  => $menu->link,
+                'submenu' => $results[$menu->nama_menu]
+            );
         }
-        $r = json_encode($result);
-        return $r;
+    } else {
+        $result = null;
     }
+    $r = json_encode($result);
+    return $r;
+}
 
-    function menu_manager($level)
-    {
-        $ci = & get_instance();
-        $induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>0,'position'=>'Side','aktif'=>'Ya','level_akses'=>$level),'urutan','ASC');
-        $cek_menu = $induk->num_rows();
-        if ($cek_menu > 0) {
-            foreach ($induk->result() as $menu) {
+function menu_manager($level)
+{
+    $ci = &get_instance();
+    $induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => 0, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => $level), 'urutan', 'ASC');
+    $cek_menu = $induk->num_rows();
+    if ($cek_menu > 0) {
+        foreach ($induk->result() as $menu) {
 
-                $sub_induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>$menu->id_menu,'position'=>'Side','aktif'=>'Ya','level_akses'=>$level),'urutan','ASC');
-                $cek_submenu = $sub_induk->num_rows();
+            $sub_induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => $menu->id_menu, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => $level), 'urutan', 'ASC');
+            $cek_submenu = $sub_induk->num_rows();
 
-                if ($cek_submenu > 0 ) {
-                    foreach ($sub_induk->result() as $submenu) {
-                        $subsub_induk = $ci->model_app->view_where_order('t_menu',array('id_parent'=>$submenu->id_menu,'position'=>'Side','aktif'=>'Ya','level_akses'=>$level),'urutan','ASC');
-                        $cek_subsubmenu = $subsub_induk->num_rows();
-                        if ($cek_subsubmenu > 0) {
+            if ($cek_submenu > 0) {
+                foreach ($sub_induk->result() as $submenu) {
+                    $subsub_induk = $ci->model_app->view_where_order('t_menu', array('id_parent' => $submenu->id_menu, 'position' => 'Side', 'aktif' => 'Ya', 'level_akses' => $level), 'urutan', 'ASC');
+                    $cek_subsubmenu = $subsub_induk->num_rows();
+                    if ($cek_subsubmenu > 0) {
 
-                            foreach ($subsub_induk->result() as $subsubmenu) {
+                        foreach ($subsub_induk->result() as $subsubmenu) {
 
-                                $resultsub[$submenu->nama_menu][] = array(
-                                    'subsubmenu'  => $subsubmenu->nama_menu,
-                                    'subsublink'  => $subsubmenu->link,
-                                    'subsubicon'  => $subsubmenu->icon      
-                                );
-                            }
-                            
-                        }else{
-                            $resultsub[$submenu->nama_menu] = null;
+                            $resultsub[$submenu->nama_menu][] = array(
+                                'subsubmenu'  => $subsubmenu->nama_menu,
+                                'subsublink'  => $subsubmenu->link,
+                                'subsubicon'  => $subsubmenu->icon
+                            );
                         }
-
-                        $results[$menu->nama_menu][] = array(
-                            'submenu'  => $submenu->nama_menu,
-                            'sublink'  => $submenu->link,
-                            'subicon'  => $submenu->icon,
-                            'subsubmenu'=>$resultsub[$submenu->nama_menu]      
-                        );
+                    } else {
+                        $resultsub[$submenu->nama_menu] = null;
                     }
-                }else{
-                    $results[$menu->nama_menu] = null;
+
+                    $results[$menu->nama_menu][] = array(
+                        'submenu'  => $submenu->nama_menu,
+                        'sublink'  => $submenu->link,
+                        'subicon'  => $submenu->icon,
+                        'subsubmenu' => $resultsub[$submenu->nama_menu]
+                    );
                 }
-                
-                $result[] = array(
-                    'menu'  => $menu->nama_menu,
-                    'link'  => $menu->link,
-                    'icon'  => $menu->icon,
-                    'submenu' => $results[$menu->nama_menu]        
-                );
+            } else {
+                $results[$menu->nama_menu] = null;
             }
-        }else{
-           $result = null; 
+
+            $result[] = array(
+                'menu'  => $menu->nama_menu,
+                'link'  => $menu->link,
+                'icon'  => $menu->icon,
+                'submenu' => $results[$menu->nama_menu]
+            );
         }
-        $r = json_encode($result);
-        return $r;
+    } else {
+        $result = null;
     }
+    $r = json_encode($result);
+    return $r;
+}
 
-    function tgl_simpan($tgl){
-            $tanggal = substr($tgl,0,2);
-            $bulan = substr($tgl,3,2);
-            $tahun = substr($tgl,6,4);
-            return $tahun.'-'.$bulan.'-'.$tanggal;       
+function tgl_simpan($tgl)
+{
+    $tanggal = substr($tgl, 0, 2);
+    $bulan = substr($tgl, 3, 2);
+    $tahun = substr($tgl, 6, 4);
+    return $tahun . '-' . $bulan . '-' . $tanggal;
+}
+
+function tgl_view($tgl)
+{
+    $tanggal = substr($tgl, 8, 2);
+    $bulan = substr($tgl, 5, 2);
+    $tahun = substr($tgl, 0, 4);
+    return $tanggal . '-' . $bulan . '-' . $tahun;
+}
+
+function enskrip($str)
+{
+    $ci = &get_instance();
+    $ci->load->library('encryption');
+    return str_replace(array('=', '+', '/'), array('-', '_', '~'), $ci->encryption->encrypt($str));
+}
+
+function deskrip($str)
+{
+    $ci = &get_instance();
+    $ci->load->library('encryption');
+    return str_replace(array('-', '_', '~'), array('=', '+', '/'), $ci->encryption->decrypt($str));
+}
+
+
+function getKab($id)
+{
+    $ci = &get_instance();
+    $nama = $ci->model_app->view_where('regencies', array('id_regencies' => $id))->row_array();
+    return $nama['name'];
+}
+
+function tgl_grafik($tgl)
+{
+    $tanggal = substr($tgl, 8, 2);
+    $bulan = getBulan(substr($tgl, 5, 2));
+    $tahun = substr($tgl, 0, 4);
+    return $tanggal . '_' . $bulan;
+}
+
+function generateRandomString($length = 10)
+{
+    return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+}
+
+function logAct($user, $act, $dt)
+{
+    $ci = &get_instance();
+    $data = array(
+        'kode_user' => $user,
+        'kegiatan' => $act,
+        'data' => $dt,
+        'tgl' => date('Y-m-d'),
+        'jam' => date('H:i:s'),
+        'ip' => $ci->input->ip_address(),
+        'browser' => $ci->agent->browser()
+    );
+    $ci->model_app->insert('t_histori', $data);
+    return true;
+}
+
+function seo_title($s)
+{
+    $c = array(' ');
+    $d = array('-', '/', '\\', ',', '.', '#', ':', ';', '\'', '"', '[', ']', '{', '}', ')', '(', '|', '`', '~', '!', '@', '%', '$', '^', '&', '*', '=', '?', '+', '–');
+    $s = str_replace($d, '', $s); // Hilangkan karakter yang telah disebutkan di array $d
+    $s = strtolower(str_replace($c, '-', $s)); // Ganti spasi dengan tanda - dan ubah hurufnya menjadi kecil semua
+    return $s;
+}
+
+function hari_ini($w)
+{
+    $seminggu = array("Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu");
+    $hari_ini = $seminggu[$w];
+    return $hari_ini;
+}
+
+function token($key)
+{
+    $keys = 'VitechAsiaAlwaysNumberOne';
+    if ($key != $keys) {
+        redirect('api/response/400');
     }
+}
 
-    function tgl_view($tgl){
-            $tanggal = substr($tgl,8,2);
-            $bulan = substr($tgl,5,2);
-            $tahun = substr($tgl,0,4);
-            return $tanggal.'-'.$bulan.'-'.$tahun;       
+function getBulan($bln)
+{
+    switch ($bln) {
+        case 1:
+            return "Jan";
+            break;
+        case 2:
+            return "Feb";
+            break;
+        case 3:
+            return "Mar";
+            break;
+        case 4:
+            return "Apr";
+            break;
+        case 5:
+            return "Mei";
+            break;
+        case 6:
+            return "Jun";
+            break;
+        case 7:
+            return "Jul";
+            break;
+        case 8:
+            return "Agu";
+            break;
+        case 9:
+            return "Sep";
+            break;
+        case 10:
+            return "Okt";
+            break;
+        case 11:
+            return "Nov";
+            break;
+        case 12:
+            return "Des";
+            break;
     }
+}
 
-    function enskrip($str)
-    {
-        $ci = & get_instance();
-        $ci->load->library('encryption');
-        return str_replace(array('=','+','/'), array('-','_','~'), $ci->encryption->encrypt($str));
+function cek_terakhir($datetime, $full = false)
+{
+    $today = time();
+    $createdday = strtotime($datetime);
+    $datediff = abs($today - $createdday);
+    $difftext = "";
+    $years = floor($datediff / (365 * 60 * 60 * 24));
+    $months = floor(($datediff - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
+    $days = floor(($datediff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+    $hours = floor($datediff / 3600);
+    $minutes = floor($datediff / 60);
+    $seconds = floor($datediff);
+    //year checker  
+    if ($difftext == "") {
+        if ($years > 1)
+            $difftext = $years . " Tahun";
+        elseif ($years == 1)
+            $difftext = $years . " Tahun";
     }
-
-    function deskrip($str)
-    {
-        $ci = & get_instance();
-        $ci->load->library('encryption');
-        return str_replace(array('-','_','~'), array('=','+','/'), $ci->encryption->decrypt($str));
+    //month checker  
+    if ($difftext == "") {
+        if ($months > 1)
+            $difftext = $months . " Bulan";
+        elseif ($months == 1)
+            $difftext = $months . " Bulan";
     }
-
-
-    function getKab($id)
-    {
-        $ci = & get_instance();
-        $nama = $ci->model_app->view_where('regencies',array('id_regencies'=>$id))->row_array();
-        return $nama['name'];
+    //month checker  
+    if ($difftext == "") {
+        if ($days > 1)
+            $difftext = $days . " Hari";
+        elseif ($days == 1)
+            $difftext = $days . " Hari";
     }
-
-    function tgl_grafik($tgl){
-            $tanggal = substr($tgl,8,2);
-            $bulan = getBulan(substr($tgl,5,2));
-            $tahun = substr($tgl,0,4);
-            return $tanggal.'_'.$bulan;       
-    }   
-
-    function generateRandomString($length = 10) {
-        return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
-    } 
-
-    function logAct($user,$act,$dt){
-        $ci = & get_instance();
-        $data = array(
-                    'id_users' => $user,
-                    'kegiatan' => $act,
-                    'data' => $dt,
-                    'tgl' => date('Y-m-d'),
-                    'jam' => date('H:i:s'),
-                    'ip' => $ci->input->ip_address(),
-                    'browser' => $ci->agent->browser() 
-                );
-        $ci->model_app->insert('t_histori',$data);
-        return true;
+    //hour checker  
+    if ($difftext == "") {
+        if ($hours > 1)
+            $difftext = $hours . " Jam";
+        elseif ($hours == 1)
+            $difftext = $hours . " Jam";
     }
-
-    function seo_title($s) {
-        $c = array (' ');
-        $d = array ('-','/','\\',',','.','#',':',';','\'','"','[',']','{','}',')','(','|','`','~','!','@','%','$','^','&','*','=','?','+','–');
-        $s = str_replace($d, '', $s); // Hilangkan karakter yang telah disebutkan di array $d
-        $s = strtolower(str_replace($c, '-', $s)); // Ganti spasi dengan tanda - dan ubah hurufnya menjadi kecil semua
-        return $s;
+    //minutes checker  
+    if ($difftext == "") {
+        if ($minutes > 1)
+            $difftext = $minutes . " Menit";
+        elseif ($minutes == 1)
+            $difftext = $minutes . " Menit";
     }
-
-    function hari_ini($w){
-        $seminggu = array("Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu");
-        $hari_ini = $seminggu[$w];
-        return $hari_ini;
+    //seconds checker  
+    if ($difftext == "") {
+        if ($seconds > 1)
+            $difftext = $seconds . " Detik";
+        elseif ($seconds == 1)
+            $difftext = $seconds . " Detik";
     }
-
-    function token($key)
-    {
-        $keys = 'VitechAsiaAlwaysNumberOne';
-        if ($key!=$keys) {
-           redirect('api/response/400'); 
-        }
-    }
-
-    function getBulan($bln){
-                switch ($bln){
-                    case 1: 
-                        return "Jan";
-                        break;
-                    case 2:
-                        return "Feb";
-                        break;
-                    case 3:
-                        return "Mar";
-                        break;
-                    case 4:
-                        return "Apr";
-                        break;
-                    case 5:
-                        return "Mei";
-                        break;
-                    case 6:
-                        return "Jun";
-                        break;
-                    case 7:
-                        return "Jul";
-                        break;
-                    case 8:
-                        return "Agu";
-                        break;
-                    case 9:
-                        return "Sep";
-                        break;
-                    case 10:
-                        return "Okt";
-                        break;
-                    case 11:
-                        return "Nov";
-                        break;
-                    case 12:
-                        return "Des";
-                        break;
-                }
-            } 
-
-function cek_terakhir($datetime, $full = false) {
-	 $today = time();    
-     $createdday= strtotime($datetime); 
-     $datediff = abs($today - $createdday);  
-     $difftext="";  
-     $years = floor($datediff / (365*60*60*24));  
-     $months = floor(($datediff - $years * 365*60*60*24) / (30*60*60*24));  
-     $days = floor(($datediff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));  
-     $hours= floor($datediff/3600);  
-     $minutes= floor($datediff/60);  
-     $seconds= floor($datediff);  
-     //year checker  
-     if($difftext=="")  
-     {  
-       if($years>1)  
-        $difftext=$years." Tahun";  
-       elseif($years==1)  
-        $difftext=$years." Tahun";  
-     }  
-     //month checker  
-     if($difftext=="")  
-     {  
-        if($months>1)  
-        $difftext=$months." Bulan";  
-        elseif($months==1)  
-        $difftext=$months." Bulan";  
-     }  
-     //month checker  
-     if($difftext=="")  
-     {  
-        if($days>1)  
-        $difftext=$days." Hari";  
-        elseif($days==1)  
-        $difftext=$days." Hari";  
-     }  
-     //hour checker  
-     if($difftext=="")  
-     {  
-        if($hours>1)  
-        $difftext=$hours." Jam";  
-        elseif($hours==1)  
-        $difftext=$hours." Jam";  
-     }  
-     //minutes checker  
-     if($difftext=="")  
-     {  
-        if($minutes>1)  
-        $difftext=$minutes." Menit";  
-        elseif($minutes==1)  
-        $difftext=$minutes." Menit";  
-     }  
-     //seconds checker  
-     if($difftext=="")  
-     {  
-        if($seconds>1)  
-        $difftext=$seconds." Detik";  
-        elseif($seconds==1)  
-        $difftext=$seconds." Detik";  
-     }  
-     return $difftext;  
-	}
+    return $difftext;
+}

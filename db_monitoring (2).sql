@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 07, 2022 at 12:20 PM
+-- Generation Time: Sep 09, 2022 at 11:39 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -47,8 +47,7 @@ CREATE TABLE `t_blok` (
 
 INSERT INTO `t_blok` (`kode_blok`, `kode_user`, `nama_blok`, `alamat_blok`, `lat_blok`, `long_blok`, `create_at`, `create_by`, `modify_at`, `modify_by`) VALUES
 ('SVR00022', 'USR0002', 'Test Server', 'Test Server', -6.308600426541275, 106.75859645624242, '2022-08-08 00:56:06', 'Adam', '2022-09-01 10:50:42', 'Adam'),
-('SVR00023', 'USR0005', 'UIN Jakarta', 'Test UIN', -6.202669326266531, 106.83518234099971, '2022-09-01 14:05:06', 'Khair Baru', NULL, NULL),
-('SVR000SVR00024', 'USR000US', '13', '123', 123, 123, '2022-09-07 16:58:06', 'msi', NULL, NULL);
+('SVR00023', 'USR0005', 'UIN Jakarta', 'Test UIN', -6.202669326266531, 106.83518234099971, '2022-09-01 14:05:06', 'Khair Baru', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -451,7 +450,17 @@ INSERT INTO `t_histori` (`id_histori`, `kode_user`, `kegiatan`, `data`, `tgl`, `
 (353, '42', 'Login', 'Khair Baru', '2022-09-01', '20:06:56', '::1', 'Chrome'),
 (354, '4', 'Login', 'Adam', '2022-09-02', '15:02:46', '::1', 'Chrome'),
 (355, '4', 'Login', 'Adam', '2022-09-02', '20:28:19', '::1', 'Chrome'),
-(356, '4', 'Login', 'Adam', '2022-09-02', '20:30:27', '::1', 'Chrome');
+(356, '4', 'Login', 'Adam', '2022-09-02', '20:30:27', '::1', 'Chrome'),
+(357, 'USR0002', 'Login', 'Adam', '2022-09-09', '09:44:31', '::1', 'Chrome'),
+(358, 'USR0002', 'Login', 'Adam', '2022-09-09', '09:44:40', '::1', 'Chrome'),
+(359, 'USR0002', 'add new client', 'SVR00023', '2022-09-09', '09:46:47', '::1', 'Chrome'),
+(360, 'USR0002', 'add new server', NULL, '2022-09-09', '10:00:57', '::1', 'Chrome'),
+(361, 'USR0002', 'add new server', NULL, '2022-09-09', '10:26:21', '::1', 'Chrome'),
+(362, 'USR0002', 'Login', 'Adam', '2022-09-09', '10:38:18', '::1', 'Chrome'),
+(363, 'USR0002', 'edit client', 'SVR00022', '2022-09-09', '10:38:41', '::1', 'Chrome'),
+(364, 'USR0002', 'add new client', 'SVR00022', '2022-09-09', '10:43:22', '::1', 'Chrome'),
+(365, 'USR0002', 'Tambah users', 'msi', '2022-09-09', '10:45:01', '::1', 'Chrome'),
+(366, 'USR0002', 'Login', 'Adam', '2022-09-09', '16:36:19', '::1', 'Chrome');
 
 -- --------------------------------------------------------
 
@@ -579,7 +588,7 @@ CREATE TABLE `t_users` (
 INSERT INTO `t_users` (`kode_user`, `nopeg`, `nama`, `email`, `password`, `nohp`, `alamat`, `foto`, `id_level`, `blokir`) VALUES
 ('USR0002', '1234567', 'Adam', 'admin@admin.com', '202cb962ac59075b964b07152d234b70', '0812345678900', 'Jakarta Selatan', 'no-image.png', 1, 'N'),
 ('USR0005', 'KH11122', 'Khair Baru', 'Khair@gmail.com', '202cb962ac59075b964b07152d234b70', '081631276213', 'Depok', 'unnamed-removebg-preview2.png', 1, 'N'),
-('USR000US', '7654321', 'msi', 'msi@gmail.com', '202cb962ac59075b964b07152d234b70', '123', 'jambi', '2000px-National_emblem_of_Indonesia_Garuda_Pancasila_svg3.png', 1, 'N');
+('USR000US', '1551511', 'msi', 'msi@gmail.com', '202cb962ac59075b964b07152d234b70', '231661616161', 'jl.msi', 'Screenshot_71.jpg', 1, 'N');
 
 --
 -- Indexes for dumped tables
@@ -597,8 +606,7 @@ ALTER TABLE `t_blok`
 --
 ALTER TABLE `t_client`
   ADD PRIMARY KEY (`kode_klient`) USING BTREE,
-  ADD KEY `key` (`kode_blok`),
-  ADD KEY `kode_blok` (`kode_blok`);
+  ADD KEY `key` (`kode_blok`) USING BTREE;
 
 --
 -- Indexes for table `t_histori`
@@ -638,7 +646,7 @@ ALTER TABLE `t_users`
 -- AUTO_INCREMENT for table `t_histori`
 --
 ALTER TABLE `t_histori`
-  MODIFY `id_histori` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=357;
+  MODIFY `id_histori` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=367;
 
 --
 -- AUTO_INCREMENT for table `t_level`
@@ -666,7 +674,7 @@ ALTER TABLE `t_role`
 -- Constraints for table `t_client`
 --
 ALTER TABLE `t_client`
-  ADD CONSTRAINT `t_client_ibfk_1` FOREIGN KEY (`kode_blok`) REFERENCES `t_blok` (`kode_blok`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `t_client_ibfk_1` FOREIGN KEY (`kode_blok`) REFERENCES `t_blok` (`kode_blok`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

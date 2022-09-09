@@ -157,7 +157,7 @@ class Ajax extends CI_Controller
 
 	function notifDc()
 	{
-		$record = $this->model_app->view_join_wheres('t_client', 't_blok', 'kode_blok', array('status_client' => 0), 'id_client', 'DESC');
+		$record = $this->model_app->view_join_wheres('t_client', 't_blok', 'kode_blok', array('status_client' => 0), 'kode_client', 'DESC');
 		$cek = $record->num_rows();
 		if ($cek > 0) {
 			$ntf = "<div class=\"notify\"> <span class=\"heartbit\"></span> <span class=\"point\"></span> </div>";
