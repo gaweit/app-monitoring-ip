@@ -1,11 +1,12 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Main extends CI_Controller {
+class Main extends CI_Controller
+{
 
 	function index()
 	{
-		redirect('siteman','refresh');
+		redirect('siteman', 'refresh');
 	}
 }
 
